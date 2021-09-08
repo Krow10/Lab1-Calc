@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="button_scale_factor" format="float" type="integer">0.9</item>
+    <dimen name="button_text_size">30sp</dimen>
+    <color name="button_text_number_color">@color/dark_grey</color>
+    <color name="button_text_operation_color">@color/egyptian_blue</color>
+</resources>
