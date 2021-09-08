@@ -15,6 +15,7 @@
         android:orientation="vertical">
 
         <EditText
+            android:id="@+id/calc_input"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5"
@@ -27,6 +28,7 @@
             ></EditText>
 
         <TextView
+            android:id="@+id/calc_output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
@@ -54,7 +56,8 @@
             android:layout_gravity="right"
             android:layout_marginRight="5dp"
             android:src="@drawable/ic_delete_button"
-            android:background="?attr/selectableItemBackgroundBorderless"></ImageButton>
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:onClick="onDeleteButton"></ImageButton>
     </LinearLayout>
 
     <LinearLayout
@@ -81,7 +84,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="7"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -95,7 +99,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="8"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -109,7 +114,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="9"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -123,7 +129,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="+"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
         </LinearLayout>
 
@@ -144,7 +151,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="4"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -158,7 +166,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="5"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -172,7 +181,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="6"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -186,7 +196,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="−"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
         </LinearLayout>
 
@@ -207,7 +218,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="1"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -221,7 +233,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="2"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -235,7 +248,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="3"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -249,7 +263,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="×"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
         </LinearLayout>
 
@@ -271,7 +286,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="C"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onClearButton">
             </Button>
 
             <Button
@@ -285,7 +301,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="0"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -299,7 +316,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="÷"
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onCalcButton">
             </Button>
 
             <Button
@@ -311,7 +329,8 @@
                 android:scaleX="@integer/button_scale_factor"
                 android:scaleY="@integer/button_scale_factor"
                 android:text="="
-                android:textSize="@dimen/button_text_size">
+                android:textSize="@dimen/button_text_size"
+                android:onClick="onEqualButton">
             </Button>
         </LinearLayout>
     </LinearLayout>
