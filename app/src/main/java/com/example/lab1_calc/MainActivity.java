@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onCalcButton(View v){
         if (calc_input.length() == getResources().getInteger(R.integer.edittext_max_length))
-            showError("Can't enter more than 200 characters.");
+            showError("Can't enter more than " + getResources().getInteger(R.integer.edittext_max_length) + " characters.");
 
         Button b = (Button) v;
         int start = Math.max(this.calc_input.getSelectionStart(), 0);
