@@ -21,18 +21,15 @@
             android:layout_weight="5"
             android:layout_marginRight="5dp"
             android:background="@null"
-            android:text="8÷2*2+2"
             android:textAlignment="textEnd"
             android:textSize="40sp"
-            android:inputType="none"
-            ></EditText>
+            android:inputType="none"></EditText>
 
         <TextView
             android:id="@+id/calc_output"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
-            android:text="123"
             android:textAlignment="textEnd"
             android:textSize="22sp"></TextView>
     </LinearLayout>

@@ -1,17 +1,29 @@
 package com.example.lab1_calc;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
 
+import android.content.Context;
+import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import net.objecthunter.exp4j.Expression;
+import net.objecthunter.exp4j.ExpressionBuilder;
+
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
-    private EditText calc_input;
+    private EditText calc_input; // TODO : Add character limit + limit number size (15)
     private TextView calc_output;
+    private String last_error;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,7 +33,44 @@ public class MainActivity extends AppCompatActivity {
 
         this.calc_output = findViewById(R.id.calc_output);
         this.calc_input = findViewById(R.id.calc_input);
+        this.last_error = "";
+
         this.calc_input.setSelection(0);
+        this.calc_input.requestFocus();
+        this.calc_input.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().matches("^([0-9]|\\.)+$"))
+                    return;
+
+                try {
+                    Expression e = new ExpressionBuilder(s.toString().replace('÷', '/').replace('×', '*').replace('−', '-')).build();
+                    calc_output.setText("");
+                    last_error = "";
+
+                    try {
+                        System.out.println("Expression : " + e.getVariableNames());
+                        double result = e.evaluate();
+                        DecimalFormat f = new DecimalFormat("0.####");
+                        calc_output.setText(f.format(result));
+                    } catch (ArithmeticException ex) {
+                        last_error = ex.getMessage();
+                    }
+                } catch (IllegalArgumentException ex) {
+                    last_error = ex.getMessage();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     public void onCalcButton(View v){
@@ -50,9 +99,33 @@ public class MainActivity extends AppCompatActivity {
         this.calc_output.setText("");
     }
 
-    public void onEqualButton(View v){
-        // TODO : Add sliding animation for output text to input text
-        this.calc_input.setText(this.calc_output.getText());
-        this.calc_output.setText("");
+    public void onEqualButton(View v) {
+        /* TODO :
+         * Add sliding animation for output text to input text
+         * Add error notification
+        */
+
+        if (!last_error.isEmpty()) {
+            this.showError(this.last_error);
+        } else if (!this.calc_output.getText().toString().isEmpty()) {
+            this.calc_input.setText(this.calc_output.getText());
+            this.calc_input.setSelection(this.calc_input.length());
+            this.calc_output.setText("");
+        }
+    }
+
+    private void showError(String msg){
+        Context context = getApplicationContext();
+        int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, msg, duration);
+        View view = toast.getView();
+
+        view.getBackground().setColorFilter(ResourcesCompat.getColor(getResources(), R.color.dark_grey, null), PorterDuff.Mode.SRC_IN);
+
+        TextView text = view.findViewById(android.R.id.message);
+        text.setTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
+
+        toast.show();
     }
 }
