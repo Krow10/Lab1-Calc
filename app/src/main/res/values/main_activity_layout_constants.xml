@@ -4,4 +4,5 @@
     <dimen name="button_text_size">30sp</dimen>
     <color name="button_text_number_color">@color/dark_grey</color>
     <color name="button_text_operation_color">@color/egyptian_blue</color>
+    <integer name="edittext_max_length">200</integer>
 </resources>
