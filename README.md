@@ -32,3 +32,7 @@ Distribué sous la license MIT. Voir le fichier [LICENSE.md](https://github.com/
 ## Contact
 
 Etienne Donneger - etienne.donneger.1@ens.etsmtl.ca
+
+## Remerciements
+
+[exp4js](https://github.com/fasseg/exp4j) - A tiny math expression evaluator for the Java programming language by [fasseg](https://github.com/fasseg)
