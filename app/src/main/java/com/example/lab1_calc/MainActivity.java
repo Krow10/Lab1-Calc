@@ -7,7 +7,11 @@ import android.content.Context;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
 import android.text.TextWatcher;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -40,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
         this.calc_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable s) {
+
             }
         });
     }
@@ -78,7 +84,11 @@ public class MainActivity extends AppCompatActivity {
         Button b = (Button) v;
         int start = Math.max(this.calc_input.getSelectionStart(), 0);
         int end = Math.max(this.calc_input.getSelectionEnd(), 0);
-        String symbol = b.getText().toString();
+        SpannableString symbol = new SpannableString(b.getText().toString());
+
+        // Make operators colored in the EditText input
+        if (!symbol.toString().matches("^[0-9]$"))
+            symbol.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(getResources(), R.color.button_text_operation_color, null)), 0, symbol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Add text to current cursor position replacing selected text if needed
         this.calc_input.getText().replace(Math.min(start, end), Math.max(start, end), symbol, 0, symbol.length());
@@ -89,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         int end = this.calc_input.getSelectionEnd();
         String current_input = this.calc_input.getText().toString();
 
-        // Remove character on the left of cursor
+        // Remove character to the left of cursor
         this.calc_input.setText(current_input.substring(0, Math.max(start - 1, 0)) + current_input.substring(end, this.calc_input.length()));
         this.calc_input.setSelection(Math.max(start - 1, 0));
     }
@@ -101,8 +111,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void onEqualButton(View v) {
-        // TODO : Add sliding animation for output text to input text
-
         if (!this.last_error.isEmpty()) {
             showError(this.last_error);
         } else if (!this.calc_output.getText().toString().isEmpty()) {
@@ -119,7 +127,7 @@ public class MainActivity extends AppCompatActivity {
         Toast toast = Toast.makeText(context, msg, duration); // Toast for notification : https://developer.android.com/guide/topics/ui/notifiers/toasts
         View view = toast.getView();
 
-        // Set toast background color and text color for message
+        // Set toast background color and text color for error message
         view.getBackground().setColorFilter(ResourcesCompat.getColor(getResources(), R.color.dark_grey, null), PorterDuff.Mode.SRC_IN);
 
         TextView text = view.findViewById(android.R.id.message);
