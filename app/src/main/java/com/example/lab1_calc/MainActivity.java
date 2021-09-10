@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     int value_id = 0;
 
+                    // Scale down text size based on number of characters in the input for better visibility
                     if (12 <= calc_input.length() && calc_input.length() <= 16)
                         value_id = R.dimen.anim_input_first_scale_down_factor;
                     else if (calc_input.length() > 16)
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         SpannableString symbol = new SpannableString(b.getText().toString());
 
         // Make operators colored in the EditText input
-        if (!symbol.toString().matches("^[0-9]$"))
+        if (this.isOperator(symbol.charAt(0)))
             symbol.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(this.res, R.color.button_text_operation_color, null)), 0, symbol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Add text to current cursor position replacing selected text if needed
@@ -121,7 +122,13 @@ public class MainActivity extends AppCompatActivity {
         String current_input = this.calc_input.getText().toString();
 
         // Remove character to the left of cursor
-        this.calc_input.setText(current_input.substring(0, Math.max(start - 1, 0)) + current_input.substring(end, this.calc_input.length()));
+        SpannableString new_colored_input = new SpannableString(current_input.substring(0, Math.max(start - 1, 0)) + current_input.substring(end, this.calc_input.length()));
+        for (int i = 0; i < new_colored_input.length(); ++i){ // Color back operators
+            if (this.isOperator(new_colored_input.charAt(i))){
+                new_colored_input.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(this.res, R.color.button_text_operation_color, null)), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+        this.calc_input.setText(new_colored_input);
         this.calc_input.setSelection(Math.max(start - 1, 0));
     }
 
@@ -141,6 +148,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private boolean isOperator(char c){
+        return c < 48 || c > 57; // 0-9 character range
+    }
+
     private void showError(String msg) {
         Context context = getApplicationContext();
         final int duration = Toast.LENGTH_LONG;
@@ -151,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void scaleInputText(float scaleFactor) {
         final float screen_density = this.res.getDisplayMetrics().density;
-        final float startSize = this.calc_input.getTextSize() / screen_density;
+        final float startSize = this.calc_input.getTextSize() / screen_density; // Get text size in sp
         final float endSize = (float) ((this.res.getDimension(R.dimen.edittext_input_text_size) / screen_density)*scaleFactor);
         final int animationDuration = this.res.getInteger(R.integer.anim_input_scale_duration); // Animation duration in ms
 
