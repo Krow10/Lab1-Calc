@@ -125,14 +125,6 @@ public class MainActivity extends AppCompatActivity {
         int duration = Toast.LENGTH_LONG;
 
         Toast toast = Toast.makeText(context, msg, duration); // Toast for notification : https://developer.android.com/guide/topics/ui/notifiers/toasts
-        View view = toast.getView();
-
-        // Set toast background color and text color for error message
-        view.getBackground().setColorFilter(ResourcesCompat.getColor(getResources(), R.color.dark_grey, null), PorterDuff.Mode.SRC_IN);
-
-        TextView text = view.findViewById(android.R.id.message);
-        text.setTextColor(ResourcesCompat.getColor(getResources(), R.color.white, null));
-
         toast.show();
     }
 }
