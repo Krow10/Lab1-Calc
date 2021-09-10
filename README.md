@@ -23,7 +23,7 @@ Certaines constantes telles que la couleur des opérateurs, le nombre maximum de
 
 ## Installation
 
-Récupérer la dernière version de l'apk depuis la [page de publication]() ou compilez là vous même à l'aide de Gradle !
+Récupérer la dernière version de l'apk depuis la [page de publication](https://github.com/Krowten11/Lab1-Calc/releases/) ou compilez là vous même à l'aide de Gradle !
 
 ## License
 
