@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
+import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
@@ -25,6 +26,8 @@ import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private EditText calc_input;
@@ -40,9 +43,9 @@ public class MainActivity extends AppCompatActivity {
 
         this.last_error = "";
         this.res = getResources();
+
         this.calc_output = findViewById(R.id.calc_output);
         this.calc_input = findViewById(R.id.calc_input);
-
         this.calc_input.setSelection(0);
         this.calc_input.requestFocus(); // Show cursor when starting app
         this.calc_input.addTextChangedListener(new TextWatcher() {
@@ -53,23 +56,41 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (calc_input.length() == res.getInteger(R.integer.edittext_max_length)) {
+                final int input_length = calc_input.length();
+
+                if (input_length == res.getInteger(R.integer.edittext_max_length)) {
                     showError("Can't enter more than " + res.getInteger(R.integer.edittext_max_length) + " characters.");
                 } else {
+                    // Setup scale factors value from constants
+                    TypedValue animScaleFactor = new TypedValue();
+                    List<Float> scale_factors = Arrays.asList(new Float[3]);
+                    scale_factors.set(0, 1.f); // No scaling (default)
+                    res.getValue(R.dimen.anim_input_first_scale_down_factor, animScaleFactor, true);
+                    scale_factors.set(1, animScaleFactor.getFloat());
+                    res.getValue(R.dimen.anim_input_second_scale_down_factor, animScaleFactor, true);
+                    scale_factors.set(2, animScaleFactor.getFloat());
+
+                    // Calculate for each scale factor the size of the input text on screen
+                    TextPaint t = new TextPaint(calc_input.getPaint());
+                    List<Float> input_text_measures = Arrays.asList(new Float[3]);
+                    for (int i = 0; i < 3; ++i) {
+                        t.setTextSize((float) ((res.getDimension(R.dimen.edittext_input_text_size)) * scale_factors.get(i)));
+                        input_text_measures.set(i, t.measureText(calc_input.getText() + "1", 0, input_length + 1));
+                    }
+
                     int value_id = 0;
-
-                    // Scale down text size based on number of characters in the input for better visibility
-                    if (12 <= calc_input.length() && calc_input.length() <= 16)
+                    final int edittext_width = calc_input.getWidth();
+                    if (input_text_measures.get(0) < edittext_width*0.9){
+                        scaleInputText(1); // Default text size fits
+                    } else if (input_text_measures.get(1) < edittext_width*0.95){
                         value_id = R.dimen.anim_input_first_scale_down_factor;
-                    else if (calc_input.length() > 16)
+                    } else {
                         value_id = R.dimen.anim_input_second_scale_down_factor;
-                    else
-                        scaleInputText(1);
+                    }
 
+                    // Start the scale animation for better readability
                     if (value_id != 0) {
-                        TypedValue animScaleFactor = new TypedValue();
                         res.getValue(value_id, animScaleFactor, true);
-
                         scaleInputText(animScaleFactor.getFloat());
                     }
                 }
@@ -108,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
         final int end = Math.max(this.calc_input.getSelectionEnd(), 0);
         SpannableString symbol = new SpannableString(b.getText().toString());
 
-        // Make operators colored in the EditText input
+        // Add color to operator symbol
         if (this.isOperator(symbol.charAt(0)))
             symbol.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(this.res, R.color.button_text_operation_color, null)), 0, symbol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
@@ -123,11 +144,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Remove character to the left of cursor
         SpannableString new_colored_input = new SpannableString(current_input.substring(0, Math.max(start - 1, 0)) + current_input.substring(end, this.calc_input.length()));
-        for (int i = 0; i < new_colored_input.length(); ++i){ // Color back operators
+        for (int i = 0; i < new_colored_input.length(); ++i){ // Recolor operators in input text
             if (this.isOperator(new_colored_input.charAt(i))){
                 new_colored_input.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(this.res, R.color.button_text_operation_color, null)), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
             }
         }
+
         this.calc_input.setText(new_colored_input);
         this.calc_input.setSelection(Math.max(start - 1, 0));
     }
