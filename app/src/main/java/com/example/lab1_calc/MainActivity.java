@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -12,10 +13,12 @@ import android.text.TextPaint;
 import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,6 +35,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private EditText calc_input;
     private TextView calc_output;
+
+    private ImageButton delete_button;
+    private Handler delete_action_handler;
+    private Runnable delete_action_runnable;
+
     private String last_error;
     private Resources res;
 
@@ -43,6 +51,35 @@ public class MainActivity extends AppCompatActivity {
 
         this.last_error = "";
         this.res = getResources();
+
+        this.delete_action_handler = new Handler();
+        this.delete_button = findViewById(R.id.delete_button);
+        this.delete_button.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                delete_action_handler.postDelayed(delete_action_runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (calc_input.length() > 0) {
+                            onDeleteButton(v);
+                            delete_action_handler.postDelayed(delete_action_runnable, res.getInteger(R.integer.delete_button_long_press_speed)); // Re-run method to keep deleting
+                        }
+                    }
+                }, res.getInteger(R.integer.delete_button_long_press_speed));
+
+                return true;
+            }
+        });
+        this.delete_button.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                v.onTouchEvent(event);
+                if (event.getAction() == MotionEvent.ACTION_UP){
+                    delete_action_handler.removeCallbacksAndMessages(null); // Stop deleting when button is released
+                }
+                return false;
+            }
+        });
 
         this.calc_output = findViewById(R.id.calc_output);
         this.calc_input = findViewById(R.id.calc_input);
