@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="button_scale_factor" format="float" type="integer">0.9</item>
+    <item name="anim_input_first_scale_down_factor" format="float" type="dimen">0.8</item>
+    <item name="anim_input_second_scale_down_factor" format="float" type="dimen">0.6</item>
     <dimen name="button_text_size">30sp</dimen>
+    <dimen name="edittext_input_text_size">50sp</dimen>
+    <dimen name="textview_output_text_size">30sp</dimen>
     <color name="button_text_number_color">@color/dark_grey</color>
     <color name="button_text_operation_color">@color/egyptian_blue</color>
     <integer name="edittext_max_length">200</integer>
+    <integer name="anim_input_scale_duration">150</integer>
 </resources>

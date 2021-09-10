@@ -22,7 +22,7 @@
             android:layout_marginRight="5dp"
             android:background="@null"
             android:textAlignment="textEnd"
-            android:textSize="50sp"
+            android:textSize="@dimen/edittext_input_text_size"
             android:inputType="none"
             android:maxLength="@integer/edittext_max_length"></EditText>
 
@@ -32,7 +32,7 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:textAlignment="textEnd"
-            android:textSize="30sp"></TextView>
+            android:textSize="@dimen/textview_output_text_size"></TextView>
     </LinearLayout>
 
     <LinearLayout
