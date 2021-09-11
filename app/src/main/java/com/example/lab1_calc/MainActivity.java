@@ -73,7 +73,6 @@ public class MainActivity extends AppCompatActivity {
         this.delete_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                v.onTouchEvent(event);
                 if (event.getAction() == MotionEvent.ACTION_UP){
                     delete_action_handler.removeCallbacksAndMessages(null); // Stop deleting when button is released
                 }
@@ -93,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (!s.toString().matches("^([0-9]|[\\.+*\\/\\-÷×−])*$")){ // Sanitize user input
+                    showError("Invalid format used.");
+                    calc_input.setText("");
+                    return;
+                } else if (s.toString().matches("^([0-9]|\\.)+$")){ // Prevent evaluating expression if it's only one number
+                    return;
+                }
+
                 final int input_length = calc_input.length();
 
                 if (input_length == res.getInteger(R.integer.edittext_max_length)) {
@@ -117,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
 
                     int value_id = 0;
                     final int edittext_width = calc_input.getWidth();
+                    // Get scale factor based on text width
                     if (input_text_measures.get(0) < edittext_width*0.9){
                         scaleInputText(1); // Default text size fits
                     } else if (input_text_measures.get(1) < edittext_width*0.95){
@@ -131,9 +139,6 @@ public class MainActivity extends AppCompatActivity {
                         scaleInputText(animScaleFactor.getFloat());
                     }
                 }
-
-                if (s.toString().matches("^([0-9]|\\.)+$")) // Prevent evaluating expression if it's only a single number
-                    return;
 
                 try {
                     // Replace display characters with operators from exp4js
