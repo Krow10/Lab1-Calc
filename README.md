@@ -1,4 +1,4 @@
-# [GTI785 Systèmes d'applications mobiles] Lab 1 : Git, Android Studio et Calculatrice
+# [GTI785 Systèmes d'applications mobiles]<br/>Lab 1 : Git, Android Studio et Calculatrice
 ## Présentation
 L'objectif de ce travail de laboratoire est de réaliser une application Android de calculatrice aux fonctionnalités basiques à l'aide d'Android Studio.
 Les opérations supportées sont les suivantes :
@@ -11,7 +11,7 @@ L'interface se compose d'un champ éditable pour entrer les nombres, d'un affich
 
 Voici une capture du prototype demandé (à gauche) et du résultat final (à droite) :
 
-![image](https://user-images.githubusercontent.com/23462475/132776344-36f2e728-31e1-43dc-8cef-ee42ed38a537.png)
+![image](https://user-images.githubusercontent.com/23462475/132962612-c1a9ff1e-a80b-4640-beab-e35e8f38a25f.png)
 
 Les nombres flottants (à virgule) ainsi que les nombres négatifs sont supportés mais ne peuvent pas être rentrés directement.
 
@@ -35,4 +35,5 @@ Etienne Donneger - etienne.donneger.1@ens.etsmtl.ca
 
 ## Remerciements
 
-[exp4js](https://github.com/fasseg/exp4j) - A tiny math expression evaluator for the Java programming language by [fasseg](https://github.com/fasseg)
+- [exp4js](https://github.com/fasseg/exp4j) - A tiny math expression evaluator for the Java programming language by [fasseg](https://github.com/fasseg)
+- [android-about-page](https://github.com/medyo/android-about-page) - Create an awesome About Page for your Android App in 2 minutes by [medyo](https://github.com/medyo)
