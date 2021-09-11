@@ -1,6 +1,6 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="35dp"
-    android:height="35dp"
+    android:width="@dimen/delete_button_shape_size"
+    android:height="@dimen/delete_button_shape_size"
     android:viewportWidth="489.425"
     android:viewportHeight="489.425">
   <path

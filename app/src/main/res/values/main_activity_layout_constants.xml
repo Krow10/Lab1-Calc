@@ -4,6 +4,9 @@
     <item name="anim_input_first_scale_down_factor" format="float" type="dimen">0.8</item>
     <item name="anim_input_second_scale_down_factor" format="float" type="dimen">0.6</item>
     <dimen name="button_text_size">30sp</dimen>
+    <dimen name="button_shape_size">30dp</dimen>
+    <dimen name="ets_logo_shape_size">150dp</dimen>
+    <dimen name="delete_button_shape_size">40dp</dimen>
     <dimen name="edittext_input_text_size">50sp</dimen>
     <dimen name="textview_output_text_size">30sp</dimen>
     <color name="button_text_number_color">@color/dark_grey</color>

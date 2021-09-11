@@ -3,7 +3,7 @@
     <item>
         <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
             <solid android:color="@color/light_grey"/>
-            <size android:width="30dp" android:height="30dp"/>
+            <size android:width="@dimen/button_shape_size" android:height="@dimen/button_shape_size"/>
         </shape>
     </item>
 </ripple>
