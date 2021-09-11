@@ -34,6 +34,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private EditText calc_input;
+    private String input_before_change;
     private TextView calc_output;
 
     private ImageButton delete_button;
@@ -51,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         this.last_error = "";
         this.res = getResources();
+        this.input_before_change = "";
 
         this.delete_action_handler = new Handler();
         this.delete_button = findViewById(R.id.delete_button);
@@ -87,14 +89,14 @@ public class MainActivity extends AppCompatActivity {
         this.calc_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+                input_before_change = s.toString();
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().matches("^([0-9]|[\\.+*\\/\\-÷×−])*$")){ // Sanitize user input
                     showError("Invalid format used.");
-                    calc_input.setText("");
+                    calc_input.setText(highlightOperators(input_before_change));
                     return;
                 } else if (s.toString().matches("^([0-9]|\\.)+$")){ // Prevent evaluating expression if it's only one number
                     return;
@@ -185,14 +187,7 @@ public class MainActivity extends AppCompatActivity {
         String current_input = this.calc_input.getText().toString();
 
         // Remove character to the left of cursor
-        SpannableString new_colored_input = new SpannableString(current_input.substring(0, Math.max(start - 1, 0)) + current_input.substring(end, this.calc_input.length()));
-        for (int i = 0; i < new_colored_input.length(); ++i){ // Recolor operators in input text
-            if (this.isOperator(new_colored_input.charAt(i))){
-                new_colored_input.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(this.res, R.color.button_text_operation_color, null)), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-            }
-        }
-
-        this.calc_input.setText(new_colored_input);
+        this.calc_input.setText(highlightOperators(current_input.substring(0, Math.max(start - 1, 0)) + current_input.substring(end, this.calc_input.length())));
         this.calc_input.setSelection(Math.max(start - 1, 0));
     }
 
@@ -212,8 +207,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isOperator(char c){
+    private boolean isOperator(char c) {
         return c < 48 || c > 57; // 0-9 character range
+    }
+
+    private SpannableString highlightOperators(String s) {
+        SpannableString new_colored_input = new SpannableString(s);
+        for (int i = 0; i < new_colored_input.length(); ++i){ // Recolor operators in input text
+            if (this.isOperator(new_colored_input.charAt(i))){
+                new_colored_input.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(this.res, R.color.button_text_operation_color, null)), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+
+        return new_colored_input;
     }
 
     private void showError(String msg) {
