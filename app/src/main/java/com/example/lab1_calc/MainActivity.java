@@ -72,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
                 return true;
 
             case R.id.action_about:
-                // Stylize  copyright notice in description
+                // Stylize copyright notice in description
                 SpannableString desc = new SpannableString(getString(R.string.about_description));
                 desc.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(res, R.color.button_text_operation_color, null)), desc.toString().indexOf('\n'), desc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 desc.setSpan(new StyleSpan(Typeface.BOLD), desc.toString().indexOf('\n'), desc.length(), 0);
@@ -301,27 +301,18 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // Popup snippet from : https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android (@suragch)
+    // TODO : Switch to dialog for dark surroundings + animations ?
+    // Adapted popup snippet from : https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android (@suragch)
     private void showPopup(View popupView){
         // create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
         popupWindow.setBackgroundDrawable(new ColorDrawable(ResourcesCompat.getColor(res, R.color.white, null))); // Set background for shadow to be visible
         popupWindow.setElevation(24);
 
         // show the popup window
         // which view you pass in doesn't matter, it is only used for the window token
         popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
-
-        // dismiss the popup window when touched
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                return true;
-            }
-        });
     }
 }
