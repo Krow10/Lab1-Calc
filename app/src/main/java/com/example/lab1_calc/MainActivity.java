@@ -191,13 +191,22 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
 
+                // Prevent entering too large numbers
+                for (String number : s.toString().split("(\\+|\\*|/|-|÷|×|−)")){
+                    if (number.length() >= res.getInteger(R.integer.textview_max_precision)){
+                        showError(String.format(res.getString(R.string.error_maximum_length_reached_msg), res.getInteger(R.integer.textview_max_precision)));
+                        calc_input.setText(highlightOperators(input_before_change));
+                        return;
+                    }
+                }
+
                 if (s.toString().matches("^([0-9]|\\.)+$")) { // Prevent evaluating expression if it's only one number
                     calc_output.setText("");
                     return;
                 }
 
                 try {
-                    // Replace display characters with operators from exp4js
+                    // Replace display characters with operators from exp4j
                     Expression e = new ExpressionBuilder(s.toString().replace('÷', '/').replace('×', '*').replace('−', '-')).build();
                     calc_output.setText("");
                     last_expression_error = "";
@@ -205,6 +214,9 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         double result = e.evaluate();
                         DecimalFormat f = new DecimalFormat("0.####"); // Format to 4 digits decimals and remove decimals if it's integer
+                        if (f.format(result).length() >= res.getInteger(R.integer.textview_max_precision)) // Format to scientific notation if number is too big
+                            f.applyPattern("0.##E0");
+
                         calc_output.setText(f.format(result));
                     } catch (ArithmeticException ex) {
                         last_expression_error = ex.getMessage();

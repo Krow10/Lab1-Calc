@@ -44,7 +44,9 @@
             android:layout_height="wrap_content"
             android:layout_marginRight="5dp"
             android:textAlignment="textEnd"
-            android:textSize="@dimen/textview_output_text_size"></TextView>
+            android:textSize="@dimen/textview_output_text_size"
+            android:maxLength="@integer/textview_max_precision"> <!-- Exp4j maximum precision -->
+        </TextView>
     </LinearLayout>
 
     <LinearLayout

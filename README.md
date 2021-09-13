@@ -35,5 +35,5 @@ Etienne Donneger - etienne.donneger.1@ens.etsmtl.ca
 
 ## Remerciements
 
-- [exp4js](https://github.com/fasseg/exp4j) - A tiny math expression evaluator for the Java programming language by [fasseg](https://github.com/fasseg)
+- [exp4j](https://github.com/fasseg/exp4j) - A tiny math expression evaluator for the Java programming language by [fasseg](https://github.com/fasseg)
 - [android-about-page](https://github.com/medyo/android-about-page) - Create an awesome About Page for your Android App in 2 minutes by [medyo](https://github.com/medyo)
