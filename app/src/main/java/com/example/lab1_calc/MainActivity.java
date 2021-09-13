@@ -5,7 +5,6 @@ import android.animation.ValueAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -16,7 +15,6 @@ import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -25,11 +23,10 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
@@ -301,18 +298,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // TODO : Switch to dialog for dark surroundings + animations ?
-    // Adapted popup snippet from : https://stackoverflow.com/questions/5944987/how-to-create-a-popup-window-popupwindow-in-android (@suragch)
     private void showPopup(View popupView){
-        // create the popup window
-        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(ResourcesCompat.getColor(res, R.color.white, null))); // Set background for shadow to be visible
-        popupWindow.setElevation(24);
-
-        // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window token
-        popupWindow.showAtLocation(popupView, Gravity.CENTER, 0, 0);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(popupView);
+        builder.create().show();
     }
 }

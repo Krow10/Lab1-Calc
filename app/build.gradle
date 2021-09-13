@@ -34,6 +34,10 @@ android {
             minifyEnabled false
             signingConfig signingConfigs.release
         }
+
+        debug {
+            pseudoLocalesEnabled true
+        }
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
