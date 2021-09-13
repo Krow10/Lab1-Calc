@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="action_settings">Paramètres</string>
-    <string name="about_description">Application de calculatrice developpée pour le laboratoire n°1 du cours GTI785 (Systèmes d\'Applications Mobiles).\n\nCopyright (c) 2021 Etienne Donneger</string>
+    <string name="about_description">Application de calculatrice developpée pour le laboratoire n°1 du cours GTI785 (Systèmes d\'Applications Mobiles).\n\nCopyright © 2021 Etienne Donneger</string>
     <string name="about_contact_email_label">Contactez moi</string>
     <string name="about_contact_github_label">Code source ouvert !</string>
     <string name="error_invalid_format_msg">Le format utilisé est invalide.</string>
     <string name="error_maximum_length_reached_msg">Impossible d\'entrer plus de %1$d caractères.</string>
     <string name="action_about">À propos</string>
+    <string name="setting_category_numbers">Nombres</string>
+    <string name="setting_title_precision">Précision</string>
+    <string name="setting_summary_precision">Fixe le nombre maximum de chiffres utilisables pour un nombre</string>
+    <string name="delete_button_content_desc">Bouton de suppression</string>
 </resources>

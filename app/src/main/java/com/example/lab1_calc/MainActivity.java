@@ -2,7 +2,10 @@ package com.example.lab1_calc;
 
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -26,32 +29,39 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.preference.PreferenceManager;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 import mehdi.sakout.aboutpage.AboutPage;
 
 public class MainActivity extends AppCompatActivity {
     private EditText calc_input;
-    private String input_before_change;
+    private HashMap<Integer, String> input_before_change;
     private TextView calc_output;
-    private Toolbar app_toolbar;
 
-    private ImageButton delete_button;
     private Handler delete_action_handler;
     private Runnable delete_action_runnable;
 
     private String last_expression_error;
     private Resources res;
+    private SharedPreferences user_prefs;
+    private ActivityResultLauncher<Intent> calcSettingsActivityResult;
 
     // Show the menu icon in the app toolbar
     @Override
@@ -65,7 +75,9 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // TODO : Implement view for settings (color, ...)
+                // Start settings activity
+                Intent intent = new Intent(this, CalcSettingsActivity.class);
+                calcSettingsActivityResult.launch(intent);
                 return true;
 
             case R.id.action_about:
@@ -97,15 +109,27 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM, WindowManager.LayoutParams.FLAG_ALT_FOCUSABLE_IM); // Disable keyboard popup for app
         setContentView(R.layout.activity_main);
 
+        // Detect closing of settings to clear the input/output fields
+        calcSettingsActivityResult = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        onClearButton(null);
+                    }
+                }
+            });
+
         last_expression_error = "";
         res = getResources();
-        input_before_change = "";
+        input_before_change = new HashMap<>();
+        user_prefs = PreferenceManager.getDefaultSharedPreferences(this );
 
-        app_toolbar = findViewById(R.id.app_toolbar);
+        Toolbar app_toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(app_toolbar);
 
         delete_action_handler = new Handler();
-        delete_button = findViewById(R.id.delete_button);
+        ImageButton delete_button = findViewById(R.id.delete_button);
         delete_button.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -125,28 +149,31 @@ public class MainActivity extends AppCompatActivity {
         delete_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_UP) {
+                if (event.getAction() == MotionEvent.ACTION_UP)
                     delete_action_handler.removeCallbacksAndMessages(null); // Stop deleting when button is released
-                }
+
                 return false;
             }
         });
 
         calc_output = findViewById(R.id.calc_output);
+
         calc_input = findViewById(R.id.calc_input);
         calc_input.setSelection(0);
         calc_input.requestFocus(); // Show cursor when starting app
         calc_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                input_before_change = s.toString();
+                input_before_change.clear();
+                input_before_change.put(calc_input.getSelectionStart() - 1, s.toString()); // Save cursor position and text input
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (!s.toString().matches("^([0-9]|[.+*/\\-÷×−])*$")) { // Sanitize user input
                     showError(getString(R.string.error_invalid_format_msg));
-                    calc_input.setText(highlightOperators(input_before_change));
+                    calc_input.setText(highlightOperators(input_before_change.values().stream().findFirst().get())); // Put back previous (valid) input
+                    calc_input.setSelection(input_before_change.keySet().stream().findFirst().get()); // Restore cursor position
                     return;
                 }
 
@@ -192,10 +219,11 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // Prevent entering too large numbers
-                for (String number : s.toString().split("(\\+|\\*|/|-|÷|×|−)")){
-                    if (number.length() >= res.getInteger(R.integer.textview_max_precision)){
-                        showError(String.format(res.getString(R.string.error_maximum_length_reached_msg), res.getInteger(R.integer.textview_max_precision)));
-                        calc_input.setText(highlightOperators(input_before_change));
+                for (String number : s.toString().split("([+*/\\-÷×−])")){
+                    if (number.length() > user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision))){
+                        showError(String.format(res.getString(R.string.error_maximum_length_reached_msg), user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision))));
+                        calc_input.setText(highlightOperators(input_before_change.values().stream().findFirst().get())); // Put back previous (valid) input
+                        calc_input.setSelection(input_before_change.keySet().stream().findFirst().get()); // Restore cursor position
                         return;
                     }
                 }
@@ -212,9 +240,9 @@ public class MainActivity extends AppCompatActivity {
                     last_expression_error = "";
 
                     try {
-                        double result = e.evaluate();
+                        final double result = e.evaluate();
                         DecimalFormat f = new DecimalFormat("0.####"); // Format to 4 digits decimals and remove decimals if it's integer
-                        if (f.format(result).length() >= res.getInteger(R.integer.textview_max_precision)) // Format to scientific notation if number is too big
+                        if (f.format(result).length() >= user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision))) // Format to scientific notation if number is too big
                             f.applyPattern("0.##E0");
 
                         calc_output.setText(f.format(result));
@@ -247,7 +275,7 @@ public class MainActivity extends AppCompatActivity {
         calc_input.getText().replace(Math.min(start, end), Math.max(start, end), symbol, 0, symbol.length());
     }
 
-    public void onDeleteButton(View v) {
+    public void onDeleteButton(@Nullable View v) {
         final int start = calc_input.getSelectionStart();
         final int end = calc_input.getSelectionEnd();
         String current_input = calc_input.getText().toString();
@@ -257,13 +285,13 @@ public class MainActivity extends AppCompatActivity {
         calc_input.setSelection(Math.max(start - 1, 0));
     }
 
-    public void onClearButton(View v) {
+    public void onClearButton(@Nullable View v) {
         calc_input.setText("");
         calc_output.setText("");
         last_expression_error = "";
     }
 
-    public void onEqualButton(View v) {
+    public void onEqualButton(@Nullable View v) {
         if (!last_expression_error.isEmpty()) {
             showError(last_expression_error);
         } else if (!calc_output.getText().toString().isEmpty()) {

@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Buttons -->
     <item name="button_scale_factor" format="float" type="integer">0.9</item>
-    <item name="anim_input_first_scale_down_factor" format="float" type="dimen">0.8</item>
-    <item name="anim_input_second_scale_down_factor" format="float" type="dimen">0.6</item>
-    <dimen name="button_text_size">30sp</dimen>
     <dimen name="button_shape_size">30dp</dimen>
-    <dimen name="ets_logo_shape_size">150dp</dimen>
-    <dimen name="delete_button_shape_size">40dp</dimen>
-    <dimen name="edittext_input_text_size">50sp</dimen>
-    <dimen name="textview_output_text_size">30sp</dimen>
     <color name="button_text_number_color">@color/dark_grey</color>
     <color name="button_text_operation_color">@color/egyptian_blue</color>
-    <integer name="edittext_max_length">200</integer>
-    <integer name="textview_max_precision">16</integer>
-    <integer name="anim_input_scale_duration">150</integer>
+    <dimen name="button_text_size">30sp</dimen>
+    <dimen name="delete_button_shape_size">40dp</dimen>
     <integer name="delete_button_long_press_speed">100</integer>
+
+    <!-- Input box -->
+    <item name="anim_input_first_scale_down_factor" format="float" type="dimen">0.8</item>
+    <item name="anim_input_second_scale_down_factor" format="float" type="dimen">0.6</item>
+    <integer name="anim_input_scale_duration">150</integer>
+    <dimen name="edittext_input_text_size">50sp</dimen>
+    <integer name="edittext_max_length">200</integer>
+
+    <!-- Output box -->
+    <integer name="textview_max_precision">16</integer>
+    <dimen name="textview_output_text_size">30sp</dimen>
+
+    <!-- Other -->
+    <dimen name="ets_logo_shape_size">150dp</dimen>
 </resources>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ripple xmlns:android="http://schemas.android.com/apk/res/android" android:color="?attr/colorControlHighlight">
     <item>
-        <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+        <shape android:shape="oval">
             <solid android:color="@color/light_grey"/>
             <size android:width="@dimen/button_shape_size" android:height="@dimen/button_shape_size"/>
         </shape>

@@ -5,4 +5,9 @@
         <item name="aboutElementIconTint">#333333</item>
         <item name="aboutSeparatorColor">@color/dark_grey</item>"
     </style>
+
+    <!-- Keep toolbar text and icons white -->
+    <style name="Base.Widget.AppCompat.Toolbar.AppToolbar" parent="Theme.Lab1Calc">
+        <item name="android:colorControlNormal">@color/white</item>
+    </style>
 </resources>
