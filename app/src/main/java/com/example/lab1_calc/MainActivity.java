@@ -45,14 +45,13 @@ import net.objecthunter.exp4j.ExpressionBuilder;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import mehdi.sakout.aboutpage.AboutPage;
 
 public class MainActivity extends AppCompatActivity {
     private EditText calc_input;
-    private HashMap<Integer, String> input_before_change;
+    private String input_before_change;
     private TextView calc_output;
 
     private Handler delete_action_handler;
@@ -122,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
 
         last_expression_error = "";
         res = getResources();
-        input_before_change = new HashMap<>();
+        input_before_change = "";
         user_prefs = PreferenceManager.getDefaultSharedPreferences(this );
 
         Toolbar app_toolbar = findViewById(R.id.app_toolbar);
@@ -164,16 +163,14 @@ public class MainActivity extends AppCompatActivity {
         calc_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                input_before_change.clear();
-                input_before_change.put(calc_input.getSelectionStart() - 1, s.toString()); // Save cursor position and text input
+                input_before_change = s.toString(); // Save cursor position and text input
             }
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (!s.toString().matches("^([0-9]|[.+*/\\-÷×−])*$")) { // Sanitize user input
+                if (!s.toString().matches("^([0-9]|[.+*/\\-÷×−eE])*$")) { // Sanitize user input
                     showError(getString(R.string.error_invalid_format_msg));
-                    calc_input.setText(highlightOperators(input_before_change.values().stream().findFirst().get())); // Put back previous (valid) input
-                    calc_input.setSelection(input_before_change.keySet().stream().findFirst().get()); // Restore cursor position
+                    restorePreviousInput();
                     return;
                 }
 
@@ -219,16 +216,16 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // Prevent entering too large numbers
-                for (String number : s.toString().split("([+*/\\-÷×−])")){
-                    if (number.length() > user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision))){
-                        showError(String.format(res.getString(R.string.error_maximum_length_reached_msg), user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision))));
-                        calc_input.setText(highlightOperators(input_before_change.values().stream().findFirst().get())); // Put back previous (valid) input
-                        calc_input.setSelection(input_before_change.keySet().stream().findFirst().get()); // Restore cursor position
+                for (String number : s.toString().split("([+*/\\-÷×−eE.])")) {
+                    if (number.length() > getPrecision()) {
+                        showError(String.format(res.getString(R.string.error_maximum_length_reached_msg), getPrecision()));
+                        restorePreviousInput();
                         return;
                     }
                 }
 
-                if (s.toString().matches("^([0-9]|\\.)+$")) { // Prevent evaluating expression if it's only one number
+                // Prevent evaluating expression if it's only one number
+                if (s.toString().matches("^([0-9]|\\.)+$")) {
                     calc_output.setText("");
                     return;
                 }
@@ -241,9 +238,13 @@ public class MainActivity extends AppCompatActivity {
 
                     try {
                         final double result = e.evaluate();
-                        DecimalFormat f = new DecimalFormat("0.####"); // Format to 4 digits decimals and remove decimals if it's integer
-                        if (f.format(result).length() >= user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision))) // Format to scientific notation if number is too big
-                            f.applyPattern("0.##E0");
+                        final String max_digits_format = new String(new char[getPrecision()]).replace("\0", "#");
+
+                        // Format to n digits decimals (depending on precision) and remove decimals if it's integer
+                        DecimalFormat f = new DecimalFormat("0." + max_digits_format);
+                        // Format to scientific notation if number is too big
+                        if (f.format(result).length() >= getPrecision())
+                            f.applyPattern("0.###E0");
 
                         calc_output.setText(f.format(result));
                     } catch (ArithmeticException ex) {
@@ -302,7 +303,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean isOperator(char c) {
-        return c < 48 || c > 57; // 0-9 character range
+        return (c < 48 || c > 57) && c != 'e' && c != 'E'; // 0-9 character range excluding 'e' and 'E' for scientific notation
+    }
+
+    private int getPrecision() {
+        return user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision));
     }
 
     private SpannableString highlightOperators(String s) {
@@ -313,14 +318,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return new_colored_input;
-    }
-
-    private void showError(String msg) {
-        Context context = getApplicationContext();
-        final int duration = Toast.LENGTH_LONG;
-
-        Toast toast = Toast.makeText(context, msg, duration); // Toast for notification : https://developer.android.com/guide/topics/ui/notifiers/toasts
-        toast.show();
     }
 
     private void scaleInputText(float scaleFactor) {
@@ -336,6 +333,20 @@ public class MainActivity extends AppCompatActivity {
             if (!animator.isRunning())
                 animator.start();
         }
+    }
+
+    private void restorePreviousInput(){
+        final int previousSelection = calc_input.getSelectionStart();
+        calc_input.setText(highlightOperators(input_before_change)); // Put back previous (valid) input
+        calc_input.setSelection(Math.min(previousSelection, calc_input.length())); // Restore cursor position
+    }
+
+    private void showError(String msg) {
+        Context context = getApplicationContext();
+        final int duration = Toast.LENGTH_LONG;
+
+        Toast toast = Toast.makeText(context, msg, duration); // Toast for notification : https://developer.android.com/guide/topics/ui/notifiers/toasts
+        toast.show();
     }
 
     private void showPopup(View popupView){

@@ -2,12 +2,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/setting_category_numbers">
         <SeekBarPreference
-            android:defaultValue="16"
             android:key="precision_key"
-            android:max="16"
-            android:summary="@string/setting_summary_precision"
             android:title="@string/setting_title_precision"
+            android:summary="@string/setting_summary_precision"
             app:min="1"
+            android:max="16"
+            android:defaultValue="16"
             app:showSeekBarValue="true" />
     </PreferenceCategory>
 </PreferenceScreen>
