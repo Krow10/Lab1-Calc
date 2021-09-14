@@ -127,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar app_toolbar = findViewById(R.id.app_toolbar);
         setSupportActionBar(app_toolbar);
 
+        // Setup long press character suppression on delete button
         delete_action_handler = new Handler();
         ImageButton delete_button = findViewById(R.id.delete_button);
         delete_button.setOnLongClickListener(new View.OnLongClickListener() {
@@ -145,11 +146,12 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
+        // Stop deleting when button is released
         delete_button.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP)
-                    delete_action_handler.removeCallbacksAndMessages(null); // Stop deleting when button is released
+                    delete_action_handler.removeCallbacksAndMessages(null);
 
                 return false;
             }
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         calc_input.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                input_before_change = s.toString(); // Save cursor position and text input
+                input_before_change = s.toString(); // Save the text input in case of malformed input detection in 'onTextChanged' method
             }
 
             @Override
@@ -199,7 +201,7 @@ public class MainActivity extends AppCompatActivity {
 
                     int value_id = 0;
                     final int edittext_width = calc_input.getWidth();
-                    // Get scale factor based on text width
+                    // Set scale factor based on text width
                     if (input_text_measures.get(0) < edittext_width*0.9) {
                         scaleInputText(1); // Default text size fits
                     } else if (input_text_measures.get(1) < edittext_width*0.95) {
@@ -208,7 +210,7 @@ public class MainActivity extends AppCompatActivity {
                         value_id = R.dimen.anim_input_second_scale_down_factor;
                     }
 
-                    // Start the scale animation for better readability
+                    // Start the scale animation for better input readability
                     if (value_id != 0) {
                         res.getValue(value_id, animScaleFactor, true);
                         scaleInputText(animScaleFactor.getFloat());
@@ -240,7 +242,7 @@ public class MainActivity extends AppCompatActivity {
                         final double result = e.evaluate();
                         final String max_digits_format = new String(new char[getPrecision()]).replace("\0", "#");
 
-                        // Format to n digits decimals (depending on precision) and remove decimals if it's integer
+                        // Format to n digits decimals (depending on precision)
                         DecimalFormat f = new DecimalFormat("0." + max_digits_format);
                         // Format to scientific notation if number is too big
                         if (f.format(result).length() >= getPrecision())
