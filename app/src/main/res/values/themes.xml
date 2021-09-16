@@ -1,10 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Lab1Calc" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="Theme.Lab1Calc" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/egyptian_blue</item>
         <item name="colorPrimaryVariant">@color/tart_orange</item>
         <item name="colorOnPrimary">@color/white</item>
+        <item name="colorButtonNormal">@color/light_grey</item>
+        <item name="colorAccent">@color/dark_grey</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/egyptian_blue</item>
         <item name="colorSecondaryVariant">@color/tart_orange</item>
@@ -13,8 +15,9 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimary</item>
         <!-- Customize your theme here. -->
         <item name="aboutStyle">@style/Widget.App.AboutPage</item>
-        <item name="android:colorControlActivated">@color/button_text_operation_color</item>
+        <item name="android:colorControlActivated">?colorPrimary</item>
         <item name="android:colorControlNormal">@android:color/tertiary_text_light</item>
         <item name="android:textColorSecondary">@android:color/tertiary_text_light</item>
+<!--        <item name="android:textColor">@color/black</item>-->
     </style>
 </resources>

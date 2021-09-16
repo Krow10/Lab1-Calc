@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <style name="Widget.App.AboutPage" parent="about_About">
-        <item name="aboutBackground">#ffffff</item>
-        <item name="aboutElementIconTint">#333333</item>
-        <item name="aboutSeparatorColor">@color/dark_grey</item>"
+        <item name="aboutBackground">?colorButtonNormal</item>
+        <item name="aboutElementIconTint">?colorAccent</item>
+        <item name="aboutSeparatorColor">?colorAccent</item>"
     </style>
 
     <!-- Keep toolbar text and icons white -->

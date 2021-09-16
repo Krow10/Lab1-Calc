@@ -37,8 +37,9 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.preference.PreferenceManager;
+
+import com.google.android.material.color.MaterialColors;
 
 import net.objecthunter.exp4j.Expression;
 import net.objecthunter.exp4j.ExpressionBuilder;
@@ -57,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler delete_action_handler;
     private Runnable delete_action_runnable;
 
+    private Toast error_toast;
     private String last_expression_error;
     private Resources res;
     private SharedPreferences user_prefs;
@@ -82,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             case R.id.action_about:
                 // Stylize copyright notice in description
                 SpannableString desc = new SpannableString(getString(R.string.about_description));
-                desc.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(res, R.color.button_text_operation_color, null)), desc.toString().indexOf('\n'), desc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                desc.setSpan(new ForegroundColorSpan(getThemeColor(calc_input.getRootView(), R.attr.colorSecondary)), desc.toString().indexOf('\n'), desc.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                 desc.setSpan(new StyleSpan(Typeface.BOLD), desc.toString().indexOf('\n'), desc.length(), 0);
 
                 // AboutPage library from @medyo (https://github.com/medyo/android-about-page)
@@ -272,7 +274,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Add color to operator symbol
         if (isOperator(symbol.charAt(0)))
-            symbol.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(res, R.color.button_text_operation_color, null)), 0, symbol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            symbol.setSpan(new ForegroundColorSpan(getThemeColor(v, R.attr.colorSecondary)), 0, symbol.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         // Add text to current cursor position replacing selected text if needed
         calc_input.getText().replace(Math.min(start, end), Math.max(start, end), symbol, 0, symbol.length());
@@ -312,11 +314,21 @@ public class MainActivity extends AppCompatActivity {
         return user_prefs.getInt("precision_key", res.getInteger(R.integer.textview_max_precision));
     }
 
+    private int getThemeColor(View v, int id){
+//        TypedValue typedValue = new TypedValue();
+//        Resources.Theme theme = ctx.getTheme();
+//        theme.resolveAttribute(R.attr.colorSecondary, typedValue, true);
+//
+//        System.out.println(typedValue.data);
+//        return typedValue.data;
+        return MaterialColors.getColor(v, id);
+    }
+
     private SpannableString highlightOperators(String s) {
         SpannableString new_colored_input = new SpannableString(s);
         for (int i = 0; i < new_colored_input.length(); ++i) { // Recolor operators in input text
             if (isOperator(new_colored_input.charAt(i)))
-                new_colored_input.setSpan(new ForegroundColorSpan(ResourcesCompat.getColor(res, R.color.button_text_operation_color, null)), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                new_colored_input.setSpan(new ForegroundColorSpan(getThemeColor(calc_input.getRootView(), R.attr.colorSecondary)), i, i + 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         }
 
         return new_colored_input;
@@ -347,8 +359,11 @@ public class MainActivity extends AppCompatActivity {
         Context context = getApplicationContext();
         final int duration = Toast.LENGTH_LONG;
 
-        Toast toast = Toast.makeText(context, msg, duration); // Toast for notification : https://developer.android.com/guide/topics/ui/notifiers/toasts
-        toast.show();
+        if (error_toast != null)
+            error_toast.cancel(); // Prevent toast notification spam
+
+        error_toast = Toast.makeText(context, msg, duration); // Toast for notification : https://developer.android.com/guide/topics/ui/notifiers/toasts
+        error_toast.show();
     }
 
     private void showPopup(View popupView){
